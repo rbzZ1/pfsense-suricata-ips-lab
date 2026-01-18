@@ -1,30 +1,37 @@
-🛡️ Laboratório de Defesa Ativa: pfSense + Suricata (IDS/IPS)
-1. Visão Geral do Projeto
-Este projeto consistiu na implementação e configuração de um sistema de detecção e prevenção de intrusão (IDS/IPS) utilizando o motor Suricata v7.0.8 integrado ao firewall pfSense.
+# 🛡️ Laboratório de Defesa Ativa: pfSense + Suricata (IDS/IPS)
 
-Evidência do Software: Figura 1: Gerenciador de pacotes do pfSense confirmando a instalação do Suricata 7.0.8_5.
+### **1. Visão Geral**
+Este repositório documenta a implementação de um sistema de detecção e prevenção de intrusão (IDS/IPS) utilizando o motor **Suricata v7.0.8** integrado ao firewall **pfSense**. O projeto demonstra a transição entre o monitoramento passivo de rede e a resposta automática a incidentes de segurança.
 
-2. Topologia e Configuração
-Firewall: pfSense operando em ambiente virtualizado (Oracle VirtualBox).
+### **2. Implementação e Configuração**
+O motor Suricata foi instalado e configurado para atuar na interface de borda (WAN), utilizando o conjunto de assinaturas *Emerging Threats (ET) Open* para identificação de padrões maliciosos.
 
-Interfaces: Configuração de interfaces WAN (192.168.0.25) e LAN (192.168.1.1) para segmentação de rede.
+> **Evidência de Instalação:**
+> ![Instalação do Suricata](screenshots/Installed_packages.png)
+> *Figura 1: Gerenciador de pacotes confirmando a instalação estável do Suricata no ecossistema pfSense.*
 
-3. Etapas de Implementação
-A. Configuração do Motor e Regras
-O motor foi configurado para processar um conjunto robusto de assinaturas. Durante a inicialização, foram carregadas com sucesso 47.458 regras do repositório Emerging Threats.
+### **3. Monitoramento e Consistência (Modo IDS)**
+Para validar a precisão do sensor, foram realizadas múltiplas requisições ao host de teste `testmyids.com`. O sistema demonstrou consistência ao identificar e registrar cada tentativa de intrusão, gerando alertas com granularidade de portas e horários distintos (15:05:00, 15:07:55 e 15:28:28).
 
-Log de Inicialização: ![Log do Suricata](Captura de tela 2026-01-18 102908.png) Figura 2: Logs do sistema confirmando o carregamento bem-sucedido de milhares de assinaturas de segurança.
+> **Logs de Detecção Sequenciais:**
+> ![Histórico de Alertas](screenshots/Captura-de-tela-2026-01-18-131437.png)
+> *Figura 2: Registro de múltiplos eventos de segurança comprovando a estabilidade e sensibilidade do sensor.*
 
-B. Ativação do Modo de Prevenção (IPS)
-Diferente de um IDS padrão, a interface WAN foi colocada em LEGACY MODE, permitindo a resposta automática a incidentes.
+### **4. Prevenção Ativa e Banimento (Modo IPS)**
+A etapa final consistiu na configuração do modo de prevenção ativa. Ao transicionar a interface para **LEGACY MODE** com as funções *Block Offenders* e *Kill States* habilitadas, o sistema passou a banir automaticamente o host agressor.
 
-Status da Interface: Figura 3: Interface WAN operando em modo de prevenção ativa (IPS).
+> **Configuração da Interface (IPS):**
+> ![Interface em Modo de Bloqueio](screenshots/interface_ips.png)
+> *Figura 3: Interface WAN operando em modo de prevenção ativa (Legacy Mode).*
 
-4. Validação e Resultados (POC)
-Para validar o sistema, foi realizado um teste de acesso ao site testmyids.com, que simula um comando de root via HTTP.
+A eficácia da defesa foi confirmada através da tabela de banimento, onde o IP externo (`217.160.0.187`) foi impedido de realizar novas comunicações com a rede interna.
 
-Detecção: O sensor capturou o tráfego e gerou múltiplos alertas em tempo real.
+> **Confirmação de Bloqueio Automático:**
+> ![Tabela de IPs Banidos](screenshots/Captura-de-tela-2026-01-18-122947.png)
+> *Figura 4: Host agressor banido pelo firewall imediatamente após a detecção da ameaça.*
 
-Bloqueio: O IPS baniu automaticamente o IP do host agressor (217.160.0.187).
+### **5. Conclusão Técnica**
+O laboratório demonstrou com sucesso a eficácia de um sistema IPS na mitigação de ameaças conhecidas. O uso estratégico do **Kill States** foi fundamental para garantir que conexões maliciosas fossem interrompidas imediatamente, eliminando riscos de persistência e garantindo a resiliência da infraestrutura de rede.
 
-Evidência do Bloqueio Ativo: Figura 4: Tabela de 'Blocked Hosts' confirmando o banimento do IP externo após a detecção do ataque.
+
+#pfsense, #suricata, #ids-ips, #cybersecurity, #network-security, #blue-team, #firewall, #infosec
